@@ -1,17 +1,31 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        release {
+            def keystorePropertiesFile = rootProject.file("keystore.properties")
+            def keystoreProperties = new Properties()
+            keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+        }
+    }
+
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
 
     defaultConfig {
-        applicationId "com.rom1v.sndcpy"
-        minSdkVersion 29
+        applicationId "fr.dzx.audiosource"
+        minSdkVersion 14
         targetSdkVersion 29
         versionCode 1
-        versionName "1.0"
+        versionName '1.0'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        signingConfig signingConfigs.release
     }
 
     buildTypes {
@@ -20,6 +34,15 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.2.0'
 }
 
 if (project.hasProperty("SNDCPY_STORE_FILE")) {

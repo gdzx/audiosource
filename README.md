@@ -1,130 +1,76 @@
-# sndcpy
+# Audio Source
 
-This tool forwards audio from an Android 10 device to the computer. It does not
-require any _root_ access. It works on _GNU/Linux_, _Windows_ and _macOS_.
+Audio Source forwards Android microphone audio input to the PulseAudio daemon
+through ADB, so you can use your Android device as a USB microphone.
 
-The purpose is to enable [audio forwarding][issue14] while mirroring with
-[scrcpy]. However, it can be used independently.
-
-[issue14]: https://github.com/Genymobile/scrcpy/issues/14
-[scrcpy]: https://github.com/Genymobile/scrcpy
-
+![screenshot](assets/screenshot.png)
 
 ## Requirements
 
- - The Android device requires at least Android 10.
- - [VLC] must be installed on the computer.
+- Device with at least Android 4.0 (API level 14), but fully tested only on
+  Android 10 (API level 29) so your mileage may vary.
+- GNU/Linux machine with:
+  - Android SDK Platform Tools (requires `adb` in `PATH`).
+  - PulseAudio (requires `pactl` in `PATH`).
+  - Socat (requires `socat` in `PATH`).
 
-[vlc]: https://www.videolan.org/
+## Usage
 
+1. Install the Audio Source APK by following the [build
+   instructions](#build-and-install), or from the
+   [releases](https://github.com/gdzx/audiosource/releases).
+2. Enable *Android Debug Bridge* (ADB) from the *Developer options* and connect
+   the device to your computer.
+3. Run `./audiosource run` to start Audio Source and forward the audio
+   automatically. (You may have to grant the permission to record audio in
+   Android.)
+4. Run `./audiosource volume LEVEL`, to set the PulseAudio source volume to
+   LEVEL, for instance `200%` (you will likely need to set the volume higher
+   than 100%).
 
-## Get the app
+## Build and install
 
-Download the latest release:
+Run `./gradlew tasks` to list the available commands.
 
- - [`sndcpy-v1.0.zip`][release]  
-   _SHA256: 4495f752fc192535cd5208ace4d35d2ba644beb9aabb0e288ae339861ad6782b_
- - [`sndcpy-with-adb-windows-v1.0.zip`][release-adb]  
-   _SHA256: 42b89b7b557b9fdf0c6f3802eac171a0e5610a50a1d615a290ed7f41cba7053d_
+### Debug
 
-_On Windows, for simplicity, take the second archive, which also contains
-`adb`._
-
-[release]: https://github.com/rom1v/sndcpy/releases/download/v1.0/sndcpy-v1.0.zip
-[release-adb]: https://github.com/rom1v/sndcpy/releases/download/v1.0/sndcpy-with-adb-windows-v1.0.zip
-
-Alternatively, you could [build the app][BUILD].
-
-[BUILD]: BUILD.md
-
-## Run the app
-
-Plug an Android 10 device with USB debugging enabled, and execute:
-
-```bash
-./sndcpy
+```shell
+$ ./audiosource build
+$ ./audiosource install
 ```
 
-If several devices are connected (listed by `adb devices`):
+### Release
 
-```bash
-./sndcpy <serial>  # replace <serial> by the device serial
-```
+1. Generate a Java KeyStore:
 
-_(omit `./` on Windows)_
+   ```shell
+   $ keytool -keystore /home/user/android.jks -genkey -alias release \
+          -keyalg RSA -keysize 2048 -validity 30000
+   ```
 
-It will install the app on the device, and request permission to start audio
-capture:
+2. Create `keystore.properties` in the project root directory containing:
 
-![screenshot](assets/request.png)
+   ```
+   storeFile=/home/user/android.jks
+   storePassword=STORE_PASS
+   keyAlias=release
+   keyPassword=KEY_PASS
+   ```
 
-Once you clicked on _START NOW_, press _Enter_ in the console to start playing
-on the computer. Press `Ctrl`+`c` in the terminal to stop (except on Windows,
-just disconnect the device or stop capture from the device notifications).
+3. Build and install:
 
-VLC may print this error message once:
+   ```shell
+   $ export AUDIOSOURCE_PROFILE=release
+   $ ./audiosource build
+   $ ./audiosource install
+   ```
 
-```
-main stream error: connection error: Connection refused
-```
+## Acknowledgement
 
-It is "expected", just ignore it.
+[sndcpy](https://github.com/rom1v/sndcpy) for the initial implementation of
+audio playback forwarding.
 
-The sound continues to be played on the device. The volume can be adjusted
-independently on the device and on the computer.
+## License
 
-## Uninstall
-
-To uninstall the app from the device:
-
-```bash
-adb uninstall com.rom1v.sndcpy
-```
-
-## Apps restrictions
-
-`sndcpy` may only forward audio from apps which do not [prevent audio
-capture][allow]. The rules are detailed in [§capture policy][rules]:
-
-> - By default, apps that target versions up to and including to Android 9.0 do
->   not permit playback capture. To enable it, include
->   `android:allowAudioPlaybackCapture="true"` in the app's `manifest.xml` file.
-> - By default, apps that target Android 10 (API level 29) or higher allow their
->   audio to be captured. To disable playback capture, include
->   `android:allowAudioPlaybackCapture="false"` in the app's `manifest.xml`
->   file.
-
-So some apps might need to be updated to support audio capture.
-
-[allow]: https://developer.android.com/guide/topics/media/playback-capture#allowing_playback_capture
-[rules]: https://developer.android.com/guide/topics/media/playback-capture#capture_policy
-
-## Audio delay
-
-This is just a proof-of-concept, so it's far from perfect.
-
-For example, jitter may cause VLC to automatically increase its buffering,
-causing an unacceptable delay:
-
-```
-main input error: ES_OUT_SET_(GROUP_)PCR  is called too late (pts_delay increased to 377 ms)
-```
-
-In that case, just restart it.
-
-## Environment variables
-
-The scripts [`sndcpy`](sndcpy) and [`sndcpy.bat`](sndcpy.bat) use some default
-values which can be overridden by environment variables.
-
- - `ADB`: the full path to the `adb` executable
- - `VLC`: the full path to the `vlc` executable
- - `SNDCPY_APK`: the full path to `sndcpy.apk`
- - `SNDCPY_PORT`: the local port to forward to communicate with the device
-
-
-## Blog post
-
- - [Audio forwarding on Android 10][blogpost]
-
-[blogpost]: https://blog.rom1v.com/2020/06/audio-forwarding-on-android-10/
+This project is licensed under the MIT license ([LICENSE](LICENSE) or
+http://opensource.org/licenses/MIT).

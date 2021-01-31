@@ -1,2 +1,2 @@
-rootProject.name='sndcpy'
+rootProject.name='audiosource'
 include ':app'

@@ -1,6 +1,7 @@
 <resources>
-    <string name="app_name">sndcpy</string>
+    <string name="app_name">Audio Source</string>
+    <string name="notification_starting">Starting up…</string>
     <string name="notification_waiting">Waiting for connection…</string>
-    <string name="notification_forwarding">Audio forwarding enabled</string>
+    <string name="notification_forwarding">Forwarding…</string>
     <string name="action_stop">Stop</string>
 </resources>
