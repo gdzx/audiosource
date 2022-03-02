@@ -60,6 +60,12 @@ _release() {
 	sha256sum audiosource.apk > audiosource.apk.sha256
 }
 
+_unload() {
+	for id in `pactl list modules short | sed -n "/module-pipe-source\tsource_name=$AUDIOSOURCE_NAME/p" | cut -f1`; do
+		pactl unload-module "$id"
+	done
+}
+
 run() {
 	for cmd in adb pactl socat; do
 		if ! command -v $cmd &> /dev/null; then
@@ -68,11 +74,12 @@ run() {
 		fi
 	done
 
-	echo '[+] Loading PulseAudio module'
+	trap 'rc=$?; _unload; exit $rc' EXIT
+	trap 'exit 130' INT
 
-	for id in `pactl list modules short | sed -n "/module-pipe-source\tsource_name=$AUDIOSOURCE_NAME/p" | cut -f1`; do
-		pactl unload-module "$id"
-	done
+	_unload
+
+	echo '[+] Loading PulseAudio module'
 
 	pactl load-module module-pipe-source source_name="$AUDIOSOURCE_NAME" channels=1 format=s16 rate=44100 file="$AUDIOSOURCE_PIPE"
 
