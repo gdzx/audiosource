@@ -74,8 +74,7 @@ run() {
 		pactl unload-module "$id"
 	done
 
-	# default: 2ch s16 44100Hz /tmp/music.input
-	pactl load-module module-pipe-source source_name="$AUDIOSOURCE_NAME" channels=1 file="$AUDIOSOURCE_PIPE"
+	pactl load-module module-pipe-source source_name="$AUDIOSOURCE_NAME" channels=1 format=s16 rate=44100 file="$AUDIOSOURCE_PIPE"
 
 	opts=
 	if [ $# -ge 1 ]; then
