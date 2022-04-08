@@ -12,7 +12,7 @@ through ADB, so you can use your Android device as a USB microphone.
 - GNU/Linux machine with:
   - Android SDK Platform Tools (requires `adb` in `PATH`).
   - PulseAudio (requires `pactl` in `PATH`).
-  - Socat (requires `socat` in `PATH`).
+  - Python 3 (requires `python3` in `PATH`).
 
 ## Usage
 

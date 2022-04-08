@@ -11,8 +11,48 @@ fi
 
 AUDIOSOURCE_APK=${AUDIOSOURCE_APK:-"$AUDIOSOURCE_DEFAULT_APK"}
 AUDIOSOURCE_NAME=${AUDIOSOURCE_NAME:-android}
-AUDIOSOURCE_PIPE=${AUDIOSOURCE_PIPE:-/tmp/android.input}
+AUDIOSOURCE_PIPE=${AUDIOSOURCE_PIPE:-/tmp/audiosource}
 AUDIOSOURCE_SOCKET=${AUDIOSOURCE_SOCKET:-audiosource}
+
+PYSOCAT="$(cat <<EOF
+import fcntl
+import os
+import socket
+import sys
+
+PIPE_SIZE = 4096
+BUF_SIZE = 1024 # Must be less than PIPE_BUF = 4096 for atomic writes.
+
+def socat(inp, out):
+    buf = bytearray(BUF_SIZE)
+
+    fcntl.fcntl(out, fcntl.F_SETPIPE_SZ, PIPE_SIZE)
+
+    flags = fcntl.fcntl(out, fcntl.F_GETFL)
+    fcntl.fcntl(out, fcntl.F_SETFL, flags | os.O_NONBLOCK)
+
+    while True:
+        n = inp.recv_into(buf, BUF_SIZE, socket.MSG_WAITALL)
+
+        if n == 0:
+            break
+
+        try:
+            out.write(buf)
+        except BlockingIOError:
+            pass
+
+def main(sock_name, pipe_name):
+    sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+    sock.connect('\0' + sock_name)
+
+    with open(pipe_name, 'wb') as fifo:
+        socat(sock, fifo)
+
+if __name__ == '__main__':
+    main(sys.argv[1], sys.argv[2])
+EOF
+)"
 
 build() {
 	if [ "$AUDIOSOURCE_PROFILE" = 'release' ]; then
@@ -100,7 +140,7 @@ run() {
 
 	adb $opts forward localabstract:"$AUDIOSOURCE_SOCKET" localabstract:audiosource
 	sleep 1
-	socat -u ABSTRACT-CONNECT:"$AUDIOSOURCE_SOCKET" PIPE:"$AUDIOSOURCE_PIPE"
+	python3 -c "$PYSOCAT" "$AUDIOSOURCE_SOCKET" "$AUDIOSOURCE_PIPE"
 }
 
 volume() {
