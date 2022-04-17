@@ -107,7 +107,7 @@ _unload() {
 }
 
 run() {
-	for cmd in adb pactl socat; do
+	for cmd in adb pactl python3; do
 		if ! command -v $cmd &> /dev/null; then
 			echo "error: $cmd not found"
 			exit 1
