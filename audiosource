@@ -22,6 +22,7 @@ import sys
 
 PIPE_SIZE = 4096
 BUF_SIZE = 1024 # Must be less than PIPE_BUF = 4096 for atomic writes.
+fcntl.F_SETPIPE_SZ=1032
 
 def socat(inp, out):
     buf = bytearray(BUF_SIZE)
