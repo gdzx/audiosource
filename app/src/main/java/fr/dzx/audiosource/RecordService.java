@@ -45,7 +45,7 @@ public class RecordService extends Service {
 
         if (Build.VERSION.SDK_INT >= 29) {
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
-                    getString(R.string.app_name), NotificationManager.IMPORTANCE_NONE);
+                    getString(R.string.app_name), NotificationManager.IMPORTANCE_LOW);
             getNotificationManager().createNotificationChannel(channel);
 
             startForeground(NOTIFICATION_ID, notification,
