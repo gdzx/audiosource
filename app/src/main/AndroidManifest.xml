@@ -10,7 +10,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:theme="@android:style/Theme.NoDisplay">
+        android:theme="@android:style/Theme.Translucent.NoTitleBar">
         <activity
             android:name="fr.dzx.audiosource.MainActivity"
             android:showWhenLocked="true"
