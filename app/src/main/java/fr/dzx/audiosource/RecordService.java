@@ -43,11 +43,13 @@ public class RecordService extends Service {
 
         Notification notification = createNotificationStarting();
 
-        if (Build.VERSION.SDK_INT >= 29) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
                     getString(R.string.app_name), NotificationManager.IMPORTANCE_LOW);
             getNotificationManager().createNotificationChannel(channel);
+        }
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             startForeground(NOTIFICATION_ID, notification,
                     ServiceInfo.FOREGROUND_SERVICE_TYPE_NONE);
         } else {
