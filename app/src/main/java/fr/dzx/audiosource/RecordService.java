@@ -49,7 +49,10 @@ public class RecordService extends Service {
             getNotificationManager().createNotificationChannel(channel);
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            startForeground(NOTIFICATION_ID, notification,
+                    ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             startForeground(NOTIFICATION_ID, notification,
                     ServiceInfo.FOREGROUND_SERVICE_TYPE_NONE);
         } else {
@@ -158,7 +161,7 @@ public class RecordService extends Service {
     private NotificationCompat.Action createStopAction() {
         Intent stopIntent = createStopIntent();
         PendingIntent stopPendingIntent = PendingIntent.getService(this, 0, stopIntent,
-                PendingIntent.FLAG_ONE_SHOT);
+                PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
         String stopString = getString(R.string.action_stop);
         NotificationCompat.Action.Builder actionBuilder = new NotificationCompat.Action.Builder(0
                 , stopString, stopPendingIntent);

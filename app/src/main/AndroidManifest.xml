@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="fr.dzx.audiosource">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application
@@ -13,6 +13,7 @@
         android:theme="@android:style/Theme.Translucent.NoTitleBar">
         <activity
             android:name="fr.dzx.audiosource.MainActivity"
+            android:exported="true"
             android:showWhenLocked="true"
             android:turnScreenOn="true">
             <intent-filter>
@@ -24,6 +25,7 @@
         <service
             android:name="fr.dzx.audiosource.RecordService"
             android:enabled="true"
+            android:foregroundServiceType="microphone"
             android:exported="false" />
     </application>
 
