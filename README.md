@@ -21,10 +21,12 @@ through ADB, so you can use your Android device as a USB microphone.
    [releases](https://github.com/gdzx/audiosource/releases).
 2. Enable *Android Debug Bridge* (ADB) from the *Developer options* and connect
    the device to your computer.
-3. Run `./audiosource run` to start Audio Source and forward the audio
+3. Into the linux Clone the repo using terminal with git clone https://github.com/gdzx/audiosource
+4. cd in the directory cd /path/to/the/audiocource or cd audiosource
+5. Run `./audiosource run` to start Audio Source and forward the audio
    automatically. (You may have to grant the permission to record audio in
    Android.)
-4. Run `./audiosource volume LEVEL`, to set the PulseAudio source volume to
+6. Run `./audiosource volume LEVEL`, to set the PulseAudio source volume to
    LEVEL, for instance `200%` (you will likely need to set the volume higher
    than 100%).
 
