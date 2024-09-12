@@ -15,13 +15,11 @@ android {
         }
     }
 
-    compileSdkVersion 34
-    buildToolsVersion "34.0.0"
-
     defaultConfig {
         applicationId "fr.dzx.audiosource"
         minSdkVersion 14
         targetSdkVersion 34
+        compileSdk 34
         versionCode 3
         versionName '1.1'
 
@@ -48,7 +46,7 @@ android {
 
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'androidx.vectordrawable:vectordrawable:1.0.0'
+    implementation 'androidx.vectordrawable:vectordrawable:1.1.0'
 }
 
 if (project.hasProperty("SNDCPY_STORE_FILE")) {

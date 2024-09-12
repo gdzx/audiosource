@@ -19,6 +19,8 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
+import java.util.Objects;
+
 public class RecordService extends Service {
     private static final String ACTION_RECORD = "fr.dzx.audiosource.RECORD";
     private static final String ACTION_STOP = "fr.dzx.audiosource.STOP";
@@ -62,7 +64,7 @@ public class RecordService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent.getAction().equals(ACTION_STOP)) {
+        if (Objects.equals(intent.getAction(), ACTION_STOP)) {
             stopSelf();
             return START_NOT_STICKY;
         }

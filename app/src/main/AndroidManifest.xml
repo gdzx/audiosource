@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
@@ -25,8 +25,8 @@
         <service
             android:name="fr.dzx.audiosource.RecordService"
             android:enabled="true"
-            android:foregroundServiceType="microphone"
-            android:exported="false" />
+            android:exported="false"
+            android:foregroundServiceType="microphone" />
     </application>
 
 </manifest>
