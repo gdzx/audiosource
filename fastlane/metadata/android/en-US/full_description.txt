@@ -1,0 +1,1 @@
+Audio Source forwards Android microphone audio input to the PulseAudio daemon through ADB, so you can use your Android device as a USB microphone.

@@ -16,8 +16,8 @@ public class RecordThread extends Thread {
 
     private static final String SOCKET_NAME = "audiosource";
 
-    private RecordService service;
-    private AudioRecord recorder;
+    private final RecordService service;
+    private final AudioRecord recorder;
 
     private volatile LocalServerSocket serverSocket;
 

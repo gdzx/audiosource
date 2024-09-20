@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
+    namespace 'fr.dzx.audiosource'
     signingConfigs {
         release {
             def keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -14,18 +15,20 @@ android {
         }
     }
 
-    compileSdkVersion 29
-    buildToolsVersion "29.0.3"
-
     defaultConfig {
         applicationId "fr.dzx.audiosource"
         minSdkVersion 14
-        targetSdkVersion 29
-        versionCode 3
-        versionName '1.1'
+        targetSdkVersion 34
+        compileSdk 34
+        versionCode 4
+        versionName '1.2'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.release
+
+        vectorDrawables {
+          useSupportLibrary true
+        }
     }
 
     buildTypes {
@@ -36,13 +39,14 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 }
 
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.vectordrawable:vectordrawable:1.1.0'
 }
 
 if (project.hasProperty("SNDCPY_STORE_FILE")) {
