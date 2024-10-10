@@ -3,6 +3,12 @@
 Audio Source forwards Android microphone audio input to the PulseAudio daemon
 through ADB, so you can use your Android device as a USB microphone.
 
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+     alt="Get it on F-Droid"
+     height="80">](https://f-droid.org/packages/fr.dzx.audiosource/)
+
+Or download the latest APK from the [Releases Section](https://github.com/gdzx/audiosource/releases/latest).
+
 ![screenshot](assets/screenshot.png)
 
 ## Requirements
