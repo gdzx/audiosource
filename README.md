@@ -11,20 +11,37 @@ through ADB, so you can use your Android device as a USB microphone.
   Android 10 (API level 29) so your mileage may vary.
 - GNU/Linux machine with:
   - Android SDK Platform Tools (requires `adb` in `PATH`).
-  - PulseAudio (requires `pactl` in `PATH`).
+  - PulseAudio or PipeWire with PulseAudio support (requires `pactl` in
+    `PATH`).
   - Python 3 (requires `python3` in `PATH`).
+
+## Installation
+
+[<img src="assets/badge_fdroid.png"
+     alt="Get it on F-Droid"
+     height="80">](https://f-droid.org/packages/fr.dzx.audiosource/)
+[<img src="assets/badge_github.png"
+    alt="Get it on GitHub"
+    height="80">](https://github.com/gdzx/audiosource/releases/latest)
+
+1. Install the Audio Source APK on your Android device through
+   [F-Droid](https://f-droid.org/packages/fr.dzx.audiosource/), or from the
+   [releases](https://github.com/gdzx/audiosource/releases/latest), or by
+   following the [build instructions](#build-and-install).
+2. Download the
+   [`audiosource`](https://github.com/gdzx/audiosource/blob/master/audiosource)
+   client script on your computer from the
+   [releases](https://github.com/gdzx/audiosource/releases/latest), and mark it
+   executable with `chmod a+x ./audiosource`.
 
 ## Usage
 
-1. Install the Audio Source APK by following the [build
-   instructions](#build-and-install), or from the
-   [releases](https://github.com/gdzx/audiosource/releases).
-2. Enable *Android Debug Bridge* (ADB) from the *Developer options* and connect
+1. Enable *Android Debug Bridge* (ADB) from the *Developer options* and connect
    the device to your computer.
-3. Run `./audiosource run` to start Audio Source and forward the audio
+2. Run `./audiosource run` to start Audio Source and forward the audio
    automatically. (You may have to grant the permission to record audio in
    Android.)
-4. Run `./audiosource volume LEVEL`, to set the PulseAudio source volume to
+3. Run `./audiosource volume LEVEL`, to set the PulseAudio source volume to
    LEVEL, for instance `200%` (you will likely need to set the volume higher
    than 100%).
 
