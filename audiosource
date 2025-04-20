@@ -110,12 +110,28 @@ _unload() {
 }
 
 run() {
-	for cmd in adb pactl python3; do
+	for cmd in adb pactl; do
 		if ! command -v $cmd &> /dev/null; then
 			echo "error: $cmd not found"
 			exit 1
 		fi
 	done
+
+	FORWARDER_CMD=""
+	if command -v socat &> /dev/null; then
+		echo "[+] Using socat for forwarding."
+		FORWARDER_CMD="socat -d -d ABSTRACT-CONNECT:\"$AUDIOSOURCE_SOCKET\" PIPE:\"$AUDIOSOURCE_PIPE\",nonblock"
+	elif command -v python3 &> /dev/null; then
+		if [ -z "$PYSOCAT" ]; then
+			echo "error: socat not found and PYSOCAT variable is not set for python3 fallback."
+			exit 1
+		fi
+		echo "[+] Using python3 script for forwarding."
+		FORWARDER_CMD="python3 -c \"\$PYSOCAT\" \"$AUDIOSOURCE_SOCKET\" \"$AUDIOSOURCE_PIPE\""
+	else
+		echo "error: Neither socat nor python3 found. Cannot forward audio."
+		exit 1
+	fi
 
 	trap 'rc=$?; _unload; exit $rc' EXIT
 	trap 'exit 130' INT
@@ -143,7 +159,7 @@ run() {
 
 	adb $opts forward localabstract:"$AUDIOSOURCE_SOCKET" localabstract:audiosource
 	sleep 1
-	python3 -c "$PYSOCAT" "$AUDIOSOURCE_SOCKET" "$AUDIOSOURCE_PIPE"
+	eval $FORWARDER_CMD
 }
 
 volume() {
