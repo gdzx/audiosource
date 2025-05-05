@@ -10,9 +10,7 @@ if [ "$AUDIOSOURCE_PROFILE" = 'release' ]; then
 fi
 
 AUDIOSOURCE_APK=${AUDIOSOURCE_APK:-"$AUDIOSOURCE_DEFAULT_APK"}
-AUDIOSOURCE_NAME=${AUDIOSOURCE_NAME:-audiosource$(uuidgen)}
-AUDIOSOURCE_PIPE=${AUDIOSOURCE_PIPE:-/tmp/$AUDIOSOURCE_NAME}
-AUDIOSOURCE_SOCKET=${AUDIOSOURCE_SOCKET:-$AUDIOSOURCE_NAME}
+DEVICE_ID=${DEVICE_ID:-audiosource$(uuidgen)}
 
 PYSOCAT="$(cat <<EOF
 import fcntl
@@ -104,7 +102,7 @@ _release() {
 }
 
 _unload() {
-	for id in `pactl list modules short | sed -n "/module-pipe-source\tsource_name=$AUDIOSOURCE_NAME/p" | cut -f1`; do
+	for id in `pactl list modules short | sed -n "/module-pipe-source\tsource_name=$DEVICE_ID/p" | cut -f1`; do
 		pactl unload-module "$id"
 	done
 }
@@ -124,7 +122,15 @@ run() {
 
 	echo '[+] Loading PulseAudio module'
 
-	pactl load-module module-pipe-source source_name="$AUDIOSOURCE_NAME" channels=1 format=s16 rate=44100 file="$AUDIOSOURCE_PIPE"
+	while getopts "n:" flag; do
+		case "$flag" in
+			n) DEVICE_ID="$OPTARG" ;;
+		esac
+	done
+
+	shift $(( OPTIND - 1 ))
+
+	pactl load-module module-pipe-source source_name="$DEVICE_ID" channels=1 format=s16 rate=44100 file="/tmp/$DEVICE_ID"
 
 	opts=
 	if [ $# -ge 1 ]; then
@@ -141,9 +147,9 @@ run() {
 
 	echo '[+] Forwarding audio'
 
-	adb $opts forward localabstract:"$AUDIOSOURCE_SOCKET" localabstract:audiosource
+	adb $opts forward localabstract:"$DEVICE_ID" localabstract:audiosource
 	sleep 1
-	python3 -c "$PYSOCAT" "$AUDIOSOURCE_SOCKET" "$AUDIOSOURCE_PIPE"
+	python3 -c "$PYSOCAT" "$DEVICE_ID" "/tmp/$DEVICE_ID"
 }
 
 volume() {
