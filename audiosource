@@ -149,7 +149,7 @@ run() {
 }
 
 volume() {
-	pactl set-source-volume android "$1"
+	pactl set-source-volume "$1" "$2"
 }
 
 main_help() {
