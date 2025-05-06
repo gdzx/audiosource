@@ -37,13 +37,23 @@ through ADB, so you can use your Android device as a USB microphone.
 ## Usage
 
 1. Enable *Android Debug Bridge* (ADB) from the *Developer options* and connect
-   the device to your computer.
+   the device(s) to your computer.
+
 2. Run `./audiosource run` to start Audio Source and forward the audio
-   automatically. (You may have to grant the permission to record audio in
-   Android.)
-3. Run `./audiosource volume LEVEL`, to set the PulseAudio source volume to
-   LEVEL, for instance `200%` (you will likely need to set the volume higher
-   than 100%).
+   automatically. You may have to grant the permission to record audio in
+   Android.
+
+   **NOTE:** If you have multiple devices connected then you will have to
+   specify the serial number of the device you would like to forward audio to
+   with `./audiosource run -s SERIAL` (device serial numbers can be found by
+   running `adb devices`).
+
+   Additionally, you may override the default PulseAudio
+   source name with `./audiosource run -n NAME`.
+
+3. Run `./audiosource volume NAME LEVEL` to set the PulseAudio source volume to
+   `LEVEL` (for instance `200%`). You will likely need to set the volume higher
+   than `100%`.
 
 ## Build and install
 
@@ -54,6 +64,13 @@ Run `./gradlew tasks` to list the available commands.
 ```shell
 $ ./audiosource build
 $ ./audiosource install
+```
+
+or if multiple devices are connected:
+
+```shell
+$ ./audiosource build
+$ ./audiosource install -s SERIAL
 ```
 
 ### Release
@@ -80,6 +97,14 @@ $ ./audiosource install
    $ export AUDIOSOURCE_PROFILE=release
    $ ./audiosource build
    $ ./audiosource install
+   ```
+
+   or with multiple devices connected:
+
+   ```shell
+   $ export AUDIOSOURCE_PROFILE=release
+   $ ./audiosource build
+   $ ./audiosource install -s SERIAL
    ```
 
 ## Acknowledgement
