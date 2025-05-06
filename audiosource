@@ -10,7 +10,7 @@ if [ "$AUDIOSOURCE_PROFILE" = 'release' ]; then
 fi
 
 AUDIOSOURCE_APK=${AUDIOSOURCE_APK:-"$AUDIOSOURCE_DEFAULT_APK"}
-DEVICE_ID=${DEVICE_ID:-audiosource$(uuidgen)}
+AUDIOSOURCE_NAME=${AUDIOSOURCE_NAME:-audiosource$(uuidgen)}
 
 PYSOCAT="$(cat <<EOF
 import fcntl
@@ -107,7 +107,7 @@ _release() {
 }
 
 _unload() {
-	for id in `pactl list modules short | sed -n "/module-pipe-source\tsource_name=$DEVICE_ID/p" | cut -f1`; do
+	for id in `pactl list modules short | sed -n "/module-pipe-source\tsource_name=$AUDIOSOURCE_NAME/p" | cut -f1`; do
 		pactl unload-module "$id"
 	done
 }
@@ -131,14 +131,14 @@ run() {
 
 	while getopts ":n:s:" flag; do
 		case "$flag" in
-			n) DEVICE_ID="$OPTARG" ;;
+			n) AUDIOSOURCE_NAME="$OPTARG" ;;
 			s) opts="-s $OPTARG" ;;
 		esac
 	done
 
 	shift $(( OPTIND - 1 ))
 
-	pactl load-module module-pipe-source source_name="$DEVICE_ID" channels=1 format=s16 rate=44100 file="/tmp/$DEVICE_ID"
+	pactl load-module module-pipe-source source_name="$AUDIOSOURCE_NAME" channels=1 format=s16 rate=44100 file="/tmp/$AUDIOSOURCE_NAME"
 
 	echo '[+] Waiting for device'
 
@@ -150,9 +150,9 @@ run() {
 
 	echo '[+] Forwarding audio'
 
-	adb $opts forward localabstract:"$DEVICE_ID" localabstract:audiosource
+	adb $opts forward localabstract:"$AUDIOSOURCE_NAME" localabstract:audiosource
 	sleep 1
-	python3 -c "$PYSOCAT" "$DEVICE_ID" "/tmp/$DEVICE_ID"
+	python3 -c "$PYSOCAT" "$AUDIOSOURCE_NAME" "/tmp/$AUDIOSOURCE_NAME"
 }
 
 volume() {
@@ -173,10 +173,8 @@ main_help() {
 		Environment:
 
 		   AUDIOSOURCE_APK      APK path (default: app/build/outputs/apk/\$profile/app-\$profile.apk)
-		   AUDIOSOURCE_NAME     PulseAudio source name (default: android)
-		   AUDIOSOURCE_PIPE     PulseAudio source pipe (default: /tmp/android.input)
+		   AUDIOSOURCE_NAME     PulseAudio source name (default: audiosource<random UUID>)
 		   AUDIOSOURCE_PROFILE  Build profile (debug or release, default: build)
-		   AUDIOSOURCE_SOCKET   Local abstract socket name (default: audiosource)
 	EOF
 }
 
