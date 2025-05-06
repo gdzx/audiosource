@@ -168,7 +168,7 @@ main_help() {
 		   build                      Build Audio Source APK (default: debug)
 		   install [-s SERIAL]        Install Audio Source to Android device (default: debug)
 		   run [-s SERIAL] [-n NAME]  Run Audio Source and start forwarding
-		   volume NAME VOL            Set volume to VOL (for example, 250%)
+		   volume NAME LEVEL          Set volume to LEVEL (for example, 250%)
 
 		Environment:
 
