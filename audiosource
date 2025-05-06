@@ -75,9 +75,14 @@ install() {
 	fi
 
 	opts=
-	if [ $# -ge 1 ]; then
-		opts="-s $1"
-	fi
+
+	while getopts ":s:" flag; do
+		case "$flag" in
+			s) opts="-s $OPTARG" ;;
+		esac
+	done
+
+	shift $(( OPTIND - 1 ))
 
 	echo '[+] Waiting for device'
 
@@ -122,20 +127,18 @@ run() {
 
 	echo '[+] Loading PulseAudio module'
 
-	while getopts "n:" flag; do
+	opts=
+
+	while getopts ":n:s:" flag; do
 		case "$flag" in
 			n) DEVICE_ID="$OPTARG" ;;
+			s) opts="-s $OPTARG" ;;
 		esac
 	done
 
 	shift $(( OPTIND - 1 ))
 
 	pactl load-module module-pipe-source source_name="$DEVICE_ID" channels=1 format=s16 rate=44100 file="/tmp/$DEVICE_ID"
-
-	opts=
-	if [ $# -ge 1 ]; then
-		opts="-s $1"
-	fi
 
 	echo '[+] Waiting for device'
 
