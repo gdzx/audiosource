@@ -87,9 +87,9 @@ install() {
 
 	echo '[+] Installing Audio Source'
 
-	adb $opts install -t -r -g "$AUDIOSOURCE_APK" || {
+	adb $opts install -rtg "$AUDIOSOURCE_APK" || {
 		adb $opts uninstall fr.dzx.audiosource
-		adb $opts install -t -g "$AUDIOSOURCE_APK"
+		adb $opts install -tg "$AUDIOSOURCE_APK"
 	}
 }
 
