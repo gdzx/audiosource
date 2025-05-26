@@ -50,7 +50,7 @@ through ADB, so you can use your Android device as a USB microphone.
 
    Additionally, you may override the default PulseAudio source name with
    `./audiosource run -n NAME`. Otherwise, a default name of
-   `audiosourceRANDOM_UUID` will be used.
+   `audiosource<RANDOM_UUID>` will be used.
 
    You can also utilize job control to connect multiple devices to PulseAudio
    simultaneously.
