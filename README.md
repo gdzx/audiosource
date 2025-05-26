@@ -48,8 +48,17 @@ through ADB, so you can use your Android device as a USB microphone.
    with `./audiosource run -s SERIAL` (device serial numbers can be found by
    running `adb devices`).
 
-   Additionally, you may override the default PulseAudio
-   source name with `./audiosource run -n NAME`.
+   Additionally, you may override the default PulseAudio source name with
+   `./audiosource run -n NAME`. Otherwise, a default name of
+   `audiosourceRANDOM_UUID` will be used.
+
+   You can also utilize job control to connect multiple devices to PulseAudio
+   simultaneously.
+
+   ```
+   $ ./audiosource run -s SERIAL_ONE 1> /dev/null &
+   $ ./audiosource run -s SERIAL_TWO 1> /dev/null &
+   ```
 
 3. Run `./audiosource volume NAME LEVEL` to set the PulseAudio source volume to
    `LEVEL` (for instance `200%`). You will likely need to set the volume higher
