@@ -148,7 +148,7 @@ run() {
 
 	adb $opts shell am start fr.dzx.audiosource/.MainActivity
 
-	echo '[+] Forwarding audio'
+	echo "[+] Forwarding audio to source: $AUDIOSOURCE_NAME"
 
 	adb $opts forward localabstract:"$AUDIOSOURCE_NAME" localabstract:audiosource
 	sleep 1
