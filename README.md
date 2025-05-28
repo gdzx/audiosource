@@ -56,8 +56,8 @@ through ADB, so you can use your Android device as a USB microphone.
    simultaneously.
 
    ```
-   $ ./audiosource run -s SERIAL_ONE 1> /dev/null &
-   $ ./audiosource run -s SERIAL_TWO 1> /dev/null &
+   $ ./audiosource run -s SERIAL_ONE > /dev/null &  // press ENTER to regain control of your terminal
+   $ ./audiosource run -s SERIAL_TWO > /dev/null &
    ```
 
 3. Run `./audiosource volume NAME LEVEL` to set the PulseAudio source volume to
