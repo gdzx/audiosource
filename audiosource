@@ -10,7 +10,17 @@ if [ "$AUDIOSOURCE_PROFILE" = 'release' ]; then
 fi
 
 AUDIOSOURCE_APK=${AUDIOSOURCE_APK:-"$AUDIOSOURCE_DEFAULT_APK"}
-AUDIOSOURCE_NAME=${AUDIOSOURCE_NAME:-audiosource$(uuidgen)}
+
+ANDROID_SERIAL=${ANDROID_SERIAL:-}
+while getopts ":s:" flag; do
+	case "$flag" in
+		s) ANDROID_SERIAL="$OPTARG" ;;
+	esac
+done
+shift $(( OPTIND - 1 ))
+
+[ -z ${ANDROID_SERIAL} ] && SERIAL_HASH= || SERIAL_HASH=-$(echo $ANDROID_SERIAL | sha256sum | cut -c 1-7)
+AUDIOSOURCE_NAME=${AUDIOSOURCE_NAME:-android$SERIAL_HASH}
 
 PYSOCAT="$(cat <<EOF
 import fcntl
@@ -74,15 +84,7 @@ install() {
 		exit 1
 	fi
 
-	opts=
-
-	while getopts ":s:" flag; do
-		case "$flag" in
-			s) opts="-s $OPTARG" ;;
-		esac
-	done
-
-	shift $(( OPTIND - 1 ))
+	[ -z ${ANDROID_SERIAL} ] && opts= || opts="-s ${ANDROID_SERIAL}"
 
 	echo '[+] Waiting for device'
 
@@ -127,15 +129,14 @@ run() {
 
 	echo '[+] Loading PulseAudio module'
 
-	opts=
+	[ -z ${ANDROID_SERIAL} ] && opts= || opts="-s ${ANDROID_SERIAL}"
 
-	while getopts ":n:s:" flag; do
+	local OPTIND
+	while getopts ":n:" flag; do
 		case "$flag" in
 			n) AUDIOSOURCE_NAME="$OPTARG" ;;
-			s) opts="-s $OPTARG" ;;
 		esac
 	done
-
 	shift $(( OPTIND - 1 ))
 
 	pactl load-module module-pipe-source source_name="$AUDIOSOURCE_NAME" channels=1 format=s16 rate=44100 file="/tmp/$AUDIOSOURCE_NAME"
