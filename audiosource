@@ -20,7 +20,7 @@ done
 shift $(( OPTIND - 1 ))
 
 [ -z ${ANDROID_SERIAL} ] && SERIAL_HASH= || SERIAL_HASH=-$(echo $ANDROID_SERIAL | sha256sum | cut -c 1-7)
-AUDIOSOURCE_NAME=${AUDIOSOURCE_NAME:-android$SERIAL_HASH}
+AUDIOSOURCE_NAME=android$SERIAL_HASH
 
 PYSOCAT="$(cat <<EOF
 import fcntl
