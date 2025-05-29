@@ -45,12 +45,13 @@ through ADB, so you can use your Android device as a USB microphone.
 
    **NOTE:** If you have multiple devices connected then you will have to
    specify the serial number of the device you would like to forward audio to
-   with `./audiosource run -s SERIAL` (device serial numbers can be found by
-   running `adb devices`).
+   with `./audiosource -s SERIAL run` or by setting the `$ANDROID_SERIAL`
+   environment variable. Device serial numbers can be found by running
+   `adb devices`.
 
    Additionally, you may override the default PulseAudio source name with
    `./audiosource run -n NAME`. Otherwise, a default name of
-   `audiosource<RANDOM_UUID>` will be used.
+   `audiosource-SERIAL_HASH` will be used.
 
    You can also utilize job control to connect multiple devices to PulseAudio
    simultaneously.
@@ -79,7 +80,7 @@ or if multiple devices are connected:
 
 ```shell
 $ ./audiosource build
-$ ./audiosource install -s SERIAL
+$ ./audiosource -s SERIAL install
 ```
 
 ### Release
@@ -113,7 +114,7 @@ $ ./audiosource install -s SERIAL
    ```shell
    $ export AUDIOSOURCE_PROFILE=release
    $ ./audiosource build
-   $ ./audiosource install -s SERIAL
+   $ ./audiosource -s SERIAL install
    ```
 
 ## Acknowledgement
