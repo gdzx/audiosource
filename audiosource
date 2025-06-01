@@ -119,7 +119,7 @@ run() {
 
 	pactl load-module module-pipe-source source_name="$AUDIOSOURCE_NAME" channels=1 format=s16 rate=44100 file="/tmp/$AUDIOSOURCE_NAME"
 
-	echo "[+] Waiting for device $ANDROID_SERIAL"
+	echo "[+] Waiting for device $AUDIOSOURCE_NAME"
 
 	adb wait-for-device
 
@@ -175,6 +175,7 @@ main() {
 		case "$opt" in
 			s)
 				serial="$OPTARG"
+				export ANDROID_SERIAL="$serial"
 				;;
 			*)
 				echo "Error: Invalid option '-$OPTARG' or missing argument"
@@ -185,7 +186,6 @@ main() {
 
 	shift $((OPTIND-1))
 
-	export ANDROID_SERIAL="$serial"
 	AUDIOSOURCE_NAME="${AUDIOSOURCE_NAME:-"android-$(echo -n "$serial" | sha256sum | cut -c 1-7)"}"
 
 	if [ $# -eq 0 ]; then
