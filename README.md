@@ -38,12 +38,30 @@ through ADB, so you can use your Android device as a USB microphone.
 
 1. Enable *Android Debug Bridge* (ADB) from the *Developer options* and connect
    the device to your computer.
+
 2. Run `./audiosource run` to start Audio Source and forward the audio
-   automatically. (You may have to grant the permission to record audio in
-   Android.)
-3. Run `./audiosource volume LEVEL`, to set the PulseAudio source volume to
-   LEVEL, for instance `200%` (you will likely need to set the volume higher
-   than 100%).
+   automatically. You may have to grant the permission to record audio in
+   Android.
+
+3. Run `./audiosource volume LEVEL` to set the PulseAudio source volume to
+   `LEVEL` (for instance `200%`). You will likely need to set the volume higher
+   than `100%`.
+
+## Multi-device
+
+If you have multiple devices connected then you will have to specify the serial
+number of the device you would like to forward audio to with `./audiosource -s
+SERIAL COMMAND` or by setting the `$ANDROID_SERIAL` environment variable.
+
+Device serial numbers can be found by running `adb devices`. 
+
+You can utilize job control to forward audio from multiple devices
+simultaneously as follows:
+
+```console
+$ ./audiosource -s shiba run &  # press ENTER to regain control of your terminal
+$ ./audiosource -s 192.168.1.188:39857 run
+```
 
 ## Build and install
 
@@ -51,7 +69,7 @@ Run `./gradlew tasks` to list the available commands.
 
 ### Debug
 
-```shell
+```console
 $ ./audiosource build
 $ ./audiosource install
 ```
@@ -60,14 +78,14 @@ $ ./audiosource install
 
 1. Generate a Java KeyStore:
 
-   ```shell
+   ```console
    $ keytool -keystore /home/user/android.jks -genkey -alias release \
           -keyalg RSA -keysize 2048 -validity 30000
    ```
 
 2. Create `keystore.properties` in the project root directory containing:
 
-   ```
+   ```ini
    storeFile=/home/user/android.jks
    storePassword=STORE_PASS
    keyAlias=release
@@ -76,7 +94,7 @@ $ ./audiosource install
 
 3. Build and install:
 
-   ```shell
+   ```console
    $ export AUDIOSOURCE_PROFILE=release
    $ ./audiosource build
    $ ./audiosource install
