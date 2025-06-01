@@ -11,6 +11,7 @@ else
 fi
 
 AUDIOSOURCE_APK=${AUDIOSOURCE_APK:-"$AUDIOSOURCE_DEFAULT_APK"}
+ANDROID_SERIAL=${ANDROID_SERIAL:-}
 
 PYSOCAT="$(cat <<EOF
 import fcntl
@@ -119,7 +120,7 @@ run() {
 
 	pactl load-module module-pipe-source source_name="$AUDIOSOURCE_NAME" channels=1 format=s16 rate=44100 file="/tmp/$AUDIOSOURCE_NAME"
 
-	echo "[+] Waiting for device $AUDIOSOURCE_NAME"
+	echo "[+] Waiting for device $ANDROID_SERIAL"
 
 	adb wait-for-device
 
@@ -169,13 +170,12 @@ main_help() {
 
 main() {
 	local opt
-	local serial="${ANDROID_SERIAL:-}"
 
 	while getopts ":s:" opt; do
 		case "$opt" in
 			s)
-				serial="$OPTARG"
-				export ANDROID_SERIAL="$serial"
+				ANDROID_SERIAL="$OPTARG"
+				export ANDROID_SERIAL
 				;;
 			*)
 				echo "Error: Invalid option '-$OPTARG' or missing argument"
@@ -186,7 +186,7 @@ main() {
 
 	shift $((OPTIND-1))
 
-	AUDIOSOURCE_NAME="${AUDIOSOURCE_NAME:-"android-$(echo -n "$serial" | sha256sum | cut -c 1-7)"}"
+	AUDIOSOURCE_NAME="${AUDIOSOURCE_NAME:-"android-$(echo -n "$ANDROID_SERIAL" | sha256sum | cut -c 1-7)"}"
 
 	if [ $# -eq 0 ]; then
 		echo 'Error: Missing command'
