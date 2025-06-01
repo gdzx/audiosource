@@ -37,33 +37,31 @@ through ADB, so you can use your Android device as a USB microphone.
 ## Usage
 
 1. Enable *Android Debug Bridge* (ADB) from the *Developer options* and connect
-   the device(s) to your computer.
+   the device to your computer.
 
 2. Run `./audiosource run` to start Audio Source and forward the audio
    automatically. You may have to grant the permission to record audio in
    Android.
 
-   **NOTE:** If you have multiple devices connected then you will have to
-   specify the serial number of the device you would like to forward audio to
-   with `./audiosource -s SERIAL run` or by setting the `$ANDROID_SERIAL`
-   environment variable. Device serial numbers can be found by running
-   `adb devices`.
-
-   Additionally, you may override the default PulseAudio source name with
-   `./audiosource run -n NAME`. Otherwise, a default name of
-   `audiosource-SERIAL_HASH` will be used.
-
-   You can also utilize job control to connect multiple devices to PulseAudio
-   simultaneously.
-
-   ```
-   $ ./audiosource -s SERIAL_ONE run  // press ENTER to regain control of your terminal
-   $ ./audiosource -s SERIAL_TWO run
-   ```
-
-3. Run `./audiosource volume NAME LEVEL` to set the PulseAudio source volume to
+3. Run `./audiosource volume LEVEL` to set the PulseAudio source volume to
    `LEVEL` (for instance `200%`). You will likely need to set the volume higher
    than `100%`.
+
+## Multi-device
+
+If you have multiple devices connected then you will have to specify the serial
+number of the device you would like to forward audio to with `./audiosource -s
+SERIAL COMMAND` or by setting the `$ANDROID_SERIAL` environment variable.
+
+Device serial numbers can be found by running `adb devices`. 
+
+You can utilize job control to forward audio from multiple devices
+simultaneously as follows:
+
+```console
+$ ./audiosource -s shiba run &  # press ENTER to regain control of your terminal
+$ ./audiosource -s 192.168.1.188:39857 run
+```
 
 ## Build and install
 
@@ -71,30 +69,23 @@ Run `./gradlew tasks` to list the available commands.
 
 ### Debug
 
-```shell
+```console
 $ ./audiosource build
 $ ./audiosource install
-```
-
-or if multiple devices are connected:
-
-```shell
-$ ./audiosource build
-$ ./audiosource -s SERIAL install
 ```
 
 ### Release
 
 1. Generate a Java KeyStore:
 
-   ```shell
+   ```console
    $ keytool -keystore /home/user/android.jks -genkey -alias release \
           -keyalg RSA -keysize 2048 -validity 30000
    ```
 
 2. Create `keystore.properties` in the project root directory containing:
 
-   ```
+   ```ini
    storeFile=/home/user/android.jks
    storePassword=STORE_PASS
    keyAlias=release
@@ -103,18 +94,10 @@ $ ./audiosource -s SERIAL install
 
 3. Build and install:
 
-   ```shell
+   ```console
    $ export AUDIOSOURCE_PROFILE=release
    $ ./audiosource build
    $ ./audiosource install
-   ```
-
-   or with multiple devices connected:
-
-   ```shell
-   $ export AUDIOSOURCE_PROFILE=release
-   $ ./audiosource build
-   $ ./audiosource -s SERIAL install
    ```
 
 ## Acknowledgement
