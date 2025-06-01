@@ -164,7 +164,7 @@ main_help() {
 		   AUDIOSOURCE_APK      APK path (default: app/build/outputs/apk/\$profile/app-\$profile.apk)
 		   AUDIOSOURCE_PROFILE  Build profile (debug or release, default: build)
 		   AUDIOSOURCE_NAME     Name of the PulseAudio source (default: android-<serial-hash>)
-		   ANDROID_SERIAL       Serial number to connect to (defaults to first ADB device)
+		   ANDROID_SERIAL       Device serial number to connect to (default: unset)
 	EOF
 }
 
@@ -175,7 +175,6 @@ main() {
 		case "$opt" in
 			s)
 				ANDROID_SERIAL="$OPTARG"
-				export ANDROID_SERIAL
 				;;
 			*)
 				echo "Error: Invalid option '-$OPTARG' or missing argument"
@@ -188,12 +187,15 @@ main() {
 
 	AUDIOSOURCE_NAME="${AUDIOSOURCE_NAME:-"android-$(echo -n "$ANDROID_SERIAL" | sha256sum | cut -c 1-7)"}"
 
+	# Empty serial seems to cause issues with ADB: `error: device '' not found`.
+	[ -n "$ANDROID_SERIAL" ] && export ANDROID_SERIAL
+
 	if [ $# -eq 0 ]; then
 		echo 'Error: Missing command'
 		main_help
 		return 2
 	fi
-	
+
 	cmd="$1"
 	shift
 
