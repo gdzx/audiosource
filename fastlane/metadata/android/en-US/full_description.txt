@@ -1,1 +1,11 @@
-Audio Source forwards Android microphone audio input to the PulseAudio daemon through ADB, so you can use your Android device as a USB microphone.
+<i>Audio Source</i> forwards Android microphone audio input to the PulseAudio daemon through ADB, so you can use your Android device as a USB microphone.
+
+<b>Requirements:</b>
+
+* Device with at least Android 4.0 (API level 14), but fully tested only on Android 10 (API level 29) so your mileage may vary.
+* GNU/Linux machine with:
+    * Android SDK Platform Tools (requires adb in PATH).
+    * PulseAudio or PipeWire with PulseAudio support (requires pactl in PATH).
+    * Python 3 (requires python3 in PATH).
+
+For further details, see the project's documentation.
