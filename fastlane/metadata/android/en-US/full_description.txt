@@ -5,7 +5,7 @@
 * Device with at least Android 4.0 (API level 14), but fully tested only on Android 10 (API level 29) so your mileage may vary.
 * GNU/Linux machine with:
     * Android SDK Platform Tools (requires adb in PATH).
-    * PulseAudio (requires pactl in PATH).
-    * Socat (requires socat in PATH).
+    * PulseAudio or PipeWire with PulseAudio support (requires pactl in PATH).
+    * Python 3 (requires python3 in PATH).
 
 For further details, see the project's documentation.
