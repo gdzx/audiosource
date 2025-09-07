@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notification_starting">Запуск…</string>
+    <string name="notification_waiting">Ждём соединения…</string>
+    <string name="notification_forwarding">Передача…</string>
+    <string name="action_stop">Остановить</string>
+</resources>
