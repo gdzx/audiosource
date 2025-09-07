@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Audio Source</string>
+    <string name="app_name" translatable="false">Audio Source</string>
     <string name="notification_starting">Starting up…</string>
     <string name="notification_waiting">Waiting for connection…</string>
     <string name="notification_forwarding">Forwarding…</string>
