@@ -13,12 +13,9 @@ import java.io.IOException;
 public class RecordThread extends Thread {
     private static final int SAMPLE_RATE = 44100;
     private static final int CHANNELS = 1;
-
     private static final String SOCKET_NAME = "audiosource";
-
     private final RecordService service;
     private final AudioRecord recorder;
-
     private volatile LocalServerSocket serverSocket;
 
     RecordThread(RecordService service, AudioRecord recorder) {
