@@ -1,5 +1,6 @@
 package fr.dzx.audiosource;
 
+import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -7,6 +8,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.pm.ServiceInfo;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
@@ -54,7 +56,7 @@ public class RecordService extends Service {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             startForeground(NOTIFICATION_ID, notification,
                     ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
             startForeground(NOTIFICATION_ID, notification,
                     ServiceInfo.FOREGROUND_SERVICE_TYPE_NONE);
         } else {
@@ -78,12 +80,19 @@ public class RecordService extends Service {
                 DEFAULT_CHANNEL_CONFIG,
                 DEFAULT_AUDIO_ENCODING);
 
-        AudioRecord recorder = new AudioRecord(
-                MediaRecorder.AudioSource.DEFAULT,
-                DEFAULT_SAMPLE_RATE,
-                DEFAULT_CHANNEL_CONFIG,
-                DEFAULT_AUDIO_ENCODING,
-                2 * minBufSize);
+        AudioRecord recorder;
+        try {
+            recorder = new AudioRecord(
+                    MediaRecorder.AudioSource.DEFAULT,
+                    DEFAULT_SAMPLE_RATE,
+                    DEFAULT_CHANNEL_CONFIG,
+                    DEFAULT_AUDIO_ENCODING,
+                    2 * minBufSize);
+        } catch (SecurityException e) {
+            Log.e(App.TAG, "Permission RECORD_AUDIO not granted");
+            stopSelf();
+            return START_NOT_STICKY;
+        }
 
         if (recorder.getState() != AudioRecord.STATE_INITIALIZED) {
 			Log.e(App.TAG, "Failed to initialize AudioRecord with default parameters");
@@ -127,7 +136,12 @@ public class RecordService extends Service {
                 .setSmallIcon(R.drawable.ic_microphone)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .build();
-        getNotificationManager().notify(NOTIFICATION_ID, notification);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+            == PackageManager.PERMISSION_GRANTED) {
+            getNotificationManager().notify(NOTIFICATION_ID, notification);
+        } else {
+            Log.w(App.TAG, "POST_NOTIFICATIONS permission not granted");
+        }
     }
 
     protected void showNotificationEstablished() {
@@ -139,7 +153,12 @@ public class RecordService extends Service {
                 .setSmallIcon(R.drawable.ic_microphone)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .build();
-        getNotificationManager().notify(NOTIFICATION_ID, notification);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                == PackageManager.PERMISSION_GRANTED) {
+            getNotificationManager().notify(NOTIFICATION_ID, notification);
+        } else {
+            Log.w(App.TAG, "POST_NOTIFICATIONS permission not granted");
+        }
     }
 
     private NotificationManagerCompat getNotificationManager() {
