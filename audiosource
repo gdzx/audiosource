@@ -82,9 +82,9 @@ install() {
 
 	echo '[+] Installing Audio Source'
 
-	adb install -rtg "$AUDIOSOURCE_APK" || {
+	adb install -r -t -g "$AUDIOSOURCE_APK" || {
 		adb uninstall "$AUDIOSOURCE_PKG"
-		adb install -tg "$AUDIOSOURCE_APK"
+		adb install -t -g "$AUDIOSOURCE_APK"
 	}
 }
 
